@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import { ShieldAlert, Radio, FileText, Settings, MessageSquare, Bell } from 'lucide-react'
+import {
+  ShieldAlert,
+  Radio,
+  FileText,
+  Settings,
+  MessageSquare,
+  Bell,
+  Volume2,
+  Lock,
+} from 'lucide-react'
 import { Button } from './ui/button'
 import { Badge } from './ui/badge'
 
@@ -7,6 +16,8 @@ interface NavbarProps {
   onOpenChat: () => void
   onOpenLogs: () => void
   onOpenSettings: () => void
+  onOpenVoiceSettings?: () => void
+  onOpenAdmin?: () => void
   incidentCount: number
 }
 
@@ -14,6 +25,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenChat,
   onOpenLogs,
   onOpenSettings,
+  onOpenVoiceSettings,
+  onOpenAdmin,
   incidentCount,
 }) => {
   const [scrolled, setScrolled] = useState(false)
@@ -63,6 +76,18 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Action Buttons & Nav CTA */}
         <div className="flex items-center gap-2 sm:gap-3">
+          {/* Spidey Voice Settings Button */}
+          {onOpenVoiceSettings && (
+            <button
+              onClick={onOpenVoiceSettings}
+              className="btn-liquid-glass btn-liquid-spidey px-3 py-2 rounded-2xl text-xs font-semibold flex items-center gap-1.5 text-white shadow-sm"
+              title="Peter Parker Voice Audio Lab"
+            >
+              <Volume2 className="w-3.5 h-3.5 text-red-300" />
+              <span className="hidden md:inline">Spidey Voice</span>
+            </button>
+          )}
+
           {/* Incident Log Button */}
           <button
             onClick={onOpenLogs}
@@ -87,6 +112,18 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <Settings className="w-4 h-4" />
           </button>
+
+          {/* Admin Portal Button */}
+          {onOpenAdmin && (
+            <button
+              onClick={onOpenAdmin}
+              className="btn-liquid-glass btn-liquid-dark p-2.5 rounded-2xl text-slate-300 hover:text-red-400 flex items-center justify-center"
+              title="Admin Portal (Supabase Video Storage & Command)"
+              aria-label="Admin Portal"
+            >
+              <Lock className="w-4 h-4" />
+            </button>
+          )}
 
           {/* Main Emergency Call CTA */}
           <Button

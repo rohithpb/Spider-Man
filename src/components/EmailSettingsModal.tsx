@@ -1,16 +1,13 @@
 import React, { useState } from 'react'
-import { X, Mail, ShieldCheck, Key, Save, AlertCircle } from 'lucide-react'
+import { X, Mail, ShieldCheck, Save, Sparkles } from 'lucide-react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import {
   getRecipientEmail,
   setRecipientEmail,
-  getEmailJSConfig,
-  setEmailJSConfig,
   DEFAULT_RECIPIENT,
 } from '../services/emailService'
 import { getGeminiApiKey, setGeminiApiKey } from '../services/geminiService'
-import { Sparkles } from 'lucide-react'
 
 interface EmailSettingsModalProps {
   isOpen: boolean
@@ -19,10 +16,6 @@ interface EmailSettingsModalProps {
 
 export const EmailSettingsModal: React.FC<EmailSettingsModalProps> = ({ isOpen, onClose }) => {
   const [recipient, setRecipient] = useState(getRecipientEmail())
-  const initialConfig = getEmailJSConfig() || { serviceId: '', templateId: '', publicKey: '' }
-  const [serviceId, setServiceId] = useState(initialConfig.serviceId || '')
-  const [templateId, setTemplateId] = useState(initialConfig.templateId || '')
-  const [publicKey, setPublicKey] = useState(initialConfig.publicKey || '')
   const [geminiKey, setGeminiKey] = useState(getGeminiApiKey())
   const [savedSuccess, setSavedSuccess] = useState(false)
 
@@ -31,11 +24,6 @@ export const EmailSettingsModal: React.FC<EmailSettingsModalProps> = ({ isOpen, 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault()
     setRecipientEmail(recipient.trim() || DEFAULT_RECIPIENT)
-    setEmailJSConfig({
-      serviceId: serviceId.trim(),
-      templateId: templateId.trim(),
-      publicKey: publicKey.trim(),
-    })
     setGeminiApiKey(geminiKey.trim())
     setSavedSuccess(true)
     setTimeout(() => {
@@ -119,55 +107,6 @@ export const EmailSettingsModal: React.FC<EmailSettingsModalProps> = ({ isOpen, 
             </div>
           </div>
 
-          {/* EmailJS Optional Integration */}
-          <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-sky-400 uppercase tracking-wider flex items-center gap-1.5">
-                <Key className="w-3.5 h-3.5" />
-                Live EmailJS Delivery (Optional)
-              </span>
-              <span className="text-[10px] text-emerald-400 font-bold bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-800/40">
-                Auto-Fallback Ready
-              </span>
-            </div>
-
-            <p className="text-[11px] text-slate-400 leading-relaxed">
-              The portal works out-of-the-box with our verified instant automated dispatcher! If you want real emails delivered directly into your physical Gmail or Outlook inbox, enter your free EmailJS credentials below:
-            </p>
-
-            <div className="space-y-2 pt-1">
-              <div>
-                <label className="text-[11px] text-slate-400 block mb-1">Service ID</label>
-                <Input
-                  type="text"
-                  value={serviceId}
-                  onChange={(e) => setServiceId(e.target.value)}
-                  placeholder="e.g. service_xxxxxxx"
-                  className="h-9 text-xs bg-slate-950"
-                />
-              </div>
-              <div>
-                <label className="text-[11px] text-slate-400 block mb-1">Template ID</label>
-                <Input
-                  type="text"
-                  value={templateId}
-                  onChange={(e) => setTemplateId(e.target.value)}
-                  placeholder="e.g. template_xxxxxxx"
-                  className="h-9 text-xs bg-slate-950"
-                />
-              </div>
-              <div>
-                <label className="text-[11px] text-slate-400 block mb-1">Public Key</label>
-                <Input
-                  type="text"
-                  value={publicKey}
-                  onChange={(e) => setPublicKey(e.target.value)}
-                  placeholder="e.g. pub_key_xxxxxxx"
-                  className="h-9 text-xs bg-slate-950"
-                />
-              </div>
-            </div>
-          </div>
 
           {savedSuccess && (
             <div className="p-3 rounded-xl bg-emerald-950/80 border border-emerald-700/60 text-emerald-300 text-xs flex items-center gap-2">

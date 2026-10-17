@@ -6,20 +6,38 @@ import { OriginStory } from './components/OriginStory'
 import { SpideyChatbot } from './components/SpideyChatbot'
 import { IncidentLogModal } from './components/IncidentLogModal'
 import { EmailSettingsModal } from './components/EmailSettingsModal'
+import { SpideyVoiceModal } from './components/SpideyVoiceModal'
+import { AdminPortal } from './components/AdminPortal'
+import { SpiderWebClickEffect } from './components/SpiderWebClickEffect'
 import { Footer } from './components/Footer'
 import { GrievanceRequest } from './types'
 import { getStoredIncidents } from './services/emailService'
-import { MessageSquare, ShieldAlert, Sparkles, X, ChevronUp } from 'lucide-react'
+import { Sparkles, ChevronUp } from 'lucide-react'
 
 export function App() {
   const [incidents, setIncidents] = useState<GrievanceRequest[]>([])
   const [isLogsOpen, setIsLogsOpen] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const [isVoiceSettingsOpen, setIsVoiceSettingsOpen] = useState(false)
+  const [isAdminOpen, setIsAdminOpen] = useState(false)
   const [showBackToTop, setShowBackToTop] = useState(false)
 
-  // Load existing dispatches on mount
+  // Load existing dispatches on mount and check for #admin in URL
   useEffect(() => {
     setIncidents(getStoredIncidents())
+
+    const checkHash = () => {
+      if (
+        window.location.hash.toLowerCase() === '#admin' ||
+        window.location.search.includes('admin')
+      ) {
+        setIsAdminOpen(true)
+      }
+    }
+
+    checkHash()
+    window.addEventListener('hashchange', checkHash)
+    return () => window.removeEventListener('hashchange', checkHash)
   }, [])
 
   useEffect(() => {
@@ -42,9 +60,10 @@ export function App() {
   }
 
   const scrollToChat = () => {
-    const chatElement = document.getElementById('help-portal')
+    const chatElement =
+      document.getElementById('spidey-chatbot-anchor') || document.getElementById('help-portal')
     if (chatElement) {
-      chatElement.scrollIntoView({ behavior: 'smooth' })
+      chatElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
   }
 
@@ -55,6 +74,8 @@ export function App() {
         onOpenChat={scrollToChat}
         onOpenLogs={() => setIsLogsOpen(true)}
         onOpenSettings={() => setIsSettingsOpen(true)}
+        onOpenVoiceSettings={() => setIsVoiceSettingsOpen(true)}
+        onOpenAdmin={() => setIsAdminOpen(true)}
         incidentCount={incidents.length}
       />
 
@@ -70,7 +91,7 @@ export function App() {
         {/* 2. Hero Section Dossier */}
         <HeroSection onOpenChat={scrollToChat} />
 
-        {/* 2. Help Portal & Chatbot Section */}
+        {/* 3. Help Portal & Chatbot Section */}
         <section id="help-portal" className="py-20 bg-slate-950/80 relative border-t border-slate-900 scroll-mt-24">
           {/* Section Header */}
           <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center mb-10 space-y-4">
@@ -83,13 +104,13 @@ export function App() {
             </h2>
             <p className="text-slate-300 text-base sm:text-lg leading-relaxed">
               As soon as you enter, Spider-Man is here to listen. Speak with him naturally below
-              to submit your grievance or request. An automated email alert will immediately
-              be dispatched to his emergency comm-link!
+              with authentic movie-style Peter Parker voice narration and voice recognition.
+              An automated email alert will immediately be dispatched to his emergency comm-link!
             </p>
           </div>
 
           {/* Embedded Conversational Chatbot - Expands Full Width Edge to Edge */}
-          <div className="w-full px-2 sm:px-4 lg:px-6">
+          <div id="spidey-chatbot-anchor" className="w-full px-2 sm:px-4 lg:px-6 scroll-mt-24">
             <SpideyChatbot
               isOpen={true}
               isFloating={false}
@@ -98,12 +119,12 @@ export function App() {
           </div>
         </section>
 
-        {/* 3. Hero Dossier & Origin Story */}
+        {/* 4. Hero Dossier & Origin Story */}
         <OriginStory />
       </main>
 
       {/* Footer */}
-      <Footer />
+      <Footer onOpenAdmin={() => setIsAdminOpen(true)} />
 
       {/* Back to top button */}
       {showBackToTop && (
@@ -131,6 +152,21 @@ export function App() {
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
       />
+
+      {/* Peter Parker Voice Synthesizer Modal */}
+      <SpideyVoiceModal
+        isOpen={isVoiceSettingsOpen}
+        onClose={() => setIsVoiceSettingsOpen(false)}
+      />
+
+      {/* Supabase Superhero Admin Portal */}
+      <AdminPortal
+        isOpen={isAdminOpen}
+        onClose={() => setIsAdminOpen(false)}
+      />
+
+      {/* Spider-Man Web Click Effect with user's uploaded dew spider web */}
+      <SpiderWebClickEffect />
     </div>
   )
 }

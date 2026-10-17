@@ -1,7 +1,11 @@
 import React from 'react'
-import { Heart, Shield, Radio, MapPin, Mail, Phone, ExternalLink } from 'lucide-react'
+import { Heart, Shield, Radio, MapPin, Mail, Phone, ExternalLink, Lock } from 'lucide-react'
 
-export const Footer: React.FC = () => {
+interface FooterProps {
+  onOpenAdmin?: () => void
+}
+
+export const Footer: React.FC<FooterProps> = ({ onOpenAdmin }) => {
   return (
     <footer className="bg-slate-950 border-t border-red-950/60 pt-16 pb-12 relative overflow-hidden">
       {/* Spider-Signal Ambient Beam */}
@@ -76,11 +80,21 @@ export const Footer: React.FC = () => {
 
         {/* Bottom Strip */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-          <p>© 2026 Brand New Day • Built with React, Tailwind CSS, TypeScript & shadcn/ui conventions.</p>
+          <p>© 2026 Brand New Day • Built with React, Tailwind CSS, TypeScript & Supabase Cloud Storage.</p>
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1 text-red-400">
               Made with <Heart className="w-3 h-3 fill-current text-red-500" /> for everyday heroes
             </span>
+            {onOpenAdmin && (
+              <button
+                onClick={onOpenAdmin}
+                className="hover:text-red-400 transition-colors flex items-center gap-1 text-slate-500 hover:text-white cursor-pointer"
+                title="Open Spider-Man Admin & Supabase Storage Portal"
+              >
+                <Lock className="w-3 h-3 text-red-400" />
+                <span>Admin Portal</span>
+              </button>
+            )}
           </div>
         </div>
       </div>
